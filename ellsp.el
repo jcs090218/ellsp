@@ -42,6 +42,7 @@
   :link '(url-link :tag "Repository" "https://github.com/jcs-elpa/ellsp"))
 
 (defun ellsp-send-response (message)
+  "Send response MESSAGE."
   (when (or (hash-table-p message)
             (and (listp message) (plist-get message :jsonrpc)))
     (setq message (lsp--json-serialize message)))
@@ -53,7 +54,7 @@
 (defclass ellsp-file ()
   ((name :type string :initarg :name)
    (buffer :type buffer :initarg :buffer))
-  "")
+  "Tracked buffer file.")
 
 (defclass ellsp-state ()
   ((files
