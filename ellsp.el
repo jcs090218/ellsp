@@ -35,8 +35,13 @@
 
 (require 'ellsp-log)
 
+(defgroup ellsp nil
+  "Elisp Language Server."
+  :prefix "ellsp-"
+  :group 'tool
+  :link '(url-link :tag "Repository" "https://github.com/jcs-elpa/ellsp"))
+
 (defun ellsp-send-response (message)
-  ""
   (when (or (hash-table-p message)
             (and (listp message) (plist-get message :jsonrpc)))
     (setq message (lsp--json-serialize message)))
@@ -308,9 +313,8 @@ be re-analysed during textDocument/didOpen handler.")))
   (let ((input)
         (has-header)
         (content-length))
-    (while (progn
-             (setq input (ellsp-stdin))
-             input)
+    (while (progn (setq input (ellsp-stdin)) input)
+      (message "input: %s" input)
       (ellsp--info input)
       (cond
        ((string-empty-p input) )
@@ -323,8 +327,7 @@ be re-analysed during textDocument/didOpen handler.")))
               (ellsp--on-request id method params)
             (error (ellsp--log-error "Ellsp error: %s"
                                      (error-message-string err)))))
-        (setq content-length nil)))
-      (message "input: %s" input))))
+        (setq content-length nil))))))
 
 (provide 'ellsp)
 ;;; ellsp.el ends here
