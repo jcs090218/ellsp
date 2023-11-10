@@ -31,8 +31,8 @@
 
 ;;; Code:
 
+(require 'rx)
 (require 'lsp-mode)
-
 (require 'ellsp-log)
 
 (defgroup ellsp nil
@@ -277,7 +277,7 @@ be re-analysed during textDocument/didOpen handler.")))
   "")
 
 (defun ellsp--on-request (id method params)
-  (ellsp--info "? %s %s %s" id method params)
+  (message "? %s %s %s" id method params)
   (ellsp--trace ">> %s" (lsp--json-serialize (list :id id :method method :params params)))
   (let ((res
          (pcase method
@@ -303,11 +303,7 @@ be re-analysed during textDocument/didOpen handler.")))
 
 (defun ellsp-stdin ()
   "Return standard input."
-  (condition-case nil
-      (with-temp-buffer
-        (insert (read-from-minibuffer ""))
-        (buffer-string))
-    (error)))
+  (read-from-minibuffer ""))
 
 (defun ellsp-stdin-loop ()
   "Reads from standard input in a loop and process incoming requests."

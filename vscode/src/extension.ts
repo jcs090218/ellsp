@@ -46,7 +46,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// Start the client. This will also launch the server
 	{
 		client.setTrace(Trace.Verbose);
-		start();
+		client.start();
 	}
 }
 
