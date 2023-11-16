@@ -44,18 +44,15 @@
   :group 'tool
   :link '(url-link :tag "Repository" "https://github.com/jcs-elpa/ellsp"))
 
-(defun ellsp-princ (object)
-  "Wrapper for function `princ'."
-  (princ object 'external-debugging-output))
-
-(defun ellsp-send-response (message)
-  "Send response MESSAGE."
-  (when (or (hash-table-p message)
-            (and (listp message) (plist-get message :jsonrpc)))
-    (setq message (lsp--json-serialize message)))
-  (ellsp-princ (format "Content-Length: %d\r\n\r\n" (string-bytes message)))
-  (ellsp-princ message)
-  (terpri))
+(defun ellsp-send-response (msg)
+  "Send response MSG."
+  (when (or (hash-table-p msg)
+            (and (listp msg) (plist-get msg :jsonrpc)))
+    (setq msg (lsp--json-serialize msg)))
+  (setq msg (format "Content-Length: %d\r\n\r\n%s" (string-bytes msg) msg))
+  (princ msg)
+  (terpri)
+  msg)
 
 (defun ellsp--uri-to-file (uri)
   ""
