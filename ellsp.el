@@ -213,7 +213,7 @@ be re-analysed during textDocument/didOpen handler.")))
          :character  (oref form end-column))))
 
 (defun ellsp--initialize (id params)
-  ""
+  "Initialize the language server."
   (lsp--make-response
    id
    (lsp-make-initialize-result
@@ -301,16 +301,12 @@ be re-analysed during textDocument/didOpen handler.")))
   (and length
        (= (length input) length)))
 
-(defun ellsp-stdin ()
-  "Return standard input."
-  (read-from-minibuffer ""))
-
 (defun ellsp-stdin-loop ()
   "Reads from standard input in a loop and process incoming requests."
   (let ((input)
         (has-header)
         (content-length))
-    (while (progn (setq input (ellsp-stdin)) input)
+    (while (progn (setq input (read-from-minibuffer "")) input)
       (message "input: %s" input)
       (ellsp--info input)
       (cond

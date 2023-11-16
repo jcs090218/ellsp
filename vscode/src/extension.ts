@@ -12,10 +12,22 @@ import {
 
 let client: LanguageClient;
 
+// Return Ellsp executable name!
+function getExec() {
+	switch (process.platform) {
+		case 'darwin': return "ellsp-macos";
+		case 'win32': return "ellsp-win";
+		case 'linux': return "ellsp-linux";
+	}
+	return 'ellsp';
+}
+
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-	const serverExecutable = { command: 'eask', args: ['exec', 'ellsp'] };
+	
+
+	const serverExecutable = { command: 'eask', args: ['exec', getExec()] };
 
 	const serverOptions: ServerOptions = {
 		run: serverExecutable,
