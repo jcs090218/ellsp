@@ -7,7 +7,7 @@
 
 (package-file "ellsp.el")
 
-(files "bin")
+(files "bin" "ellsp-*.el")
 
 (script "test" "echo \"Error: no test specified\" && exit 1")
 
