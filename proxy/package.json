@@ -1,0 +1,52 @@
+{
+  "name": "ellsp",
+  "version": "0.0.1",
+  "description": "Emacs Lisp Language Server",
+  "main": "start.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pkg-all": "pkg package.json --output ../bin/ellsp",
+    "pkg-linux-arm64": "pkg package.json -t node16-linux-arm64 --output ../bin/ellsp",
+    "pkg-linux-x64": "pkg package.json -t node16-linux-x64 --output ../bin/ellsp",
+    "pkg-macos-arm64": "pkg package.json -t node16-macos-arm64 --output ../bin/ellsp",
+    "pkg-macos-x64": "pkg package.json -t node16-macos-x64 --output ../bin/ellsp",
+    "pkg-win-arm64": "pkg package.json -t node16-win-arm64 --output ../bin/ellsp",
+    "pkg-win-x64": "pkg package.json -t node16-win-x64 --output ../bin/ellsp"
+  },
+  "bin": {
+    "ellsp": "start.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jcs-elpa/ellsp.git"
+  },
+  "keywords": [
+    "ellsp",
+    "elisp",
+    "emacs",
+    "language-server"
+  ],
+  "author": "Jen-Chieh Shen",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/jcs-elpa/ellsp/issues"
+  },
+  "homepage": "https://github.com/jcs-elpa/ellsp#readme",
+  "dependencies": {
+    "which": "^4.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "pkg": {
+    "scripts": [
+      "*.js"
+    ],
+    "targets": [
+      "node16-linux-x64",
+      "node16-macos-x64",
+      "node16-win-x64"
+    ],
+    "outputPath": "bin"
+  }
+}
