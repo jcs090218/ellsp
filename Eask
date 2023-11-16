@@ -7,6 +7,8 @@
 
 (package-file "ellsp.el")
 
+(files "bin")
+
 (script "test" "echo \"Error: no test specified\" && exit 1")
 
 (source 'gnu)
