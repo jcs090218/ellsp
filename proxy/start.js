@@ -36,7 +36,8 @@ function startEmacs() {
              ['--batch', '--no-init-file', '--no-site-file', '--no-splash',
               '--load=ellsp',
               '--funcall=ellsp-stdin-loop'],
-             { stdio: [null, 'pipe', 'inherit'], shell: true });
+             { stdio: ['pipe', 'inherit', 'inherit'], shell: true }
+            );
 
   proc.on('close', function (code) {
     if (code == 0) return;
@@ -54,14 +55,9 @@ function main() {
   if (proc === null)
     return;
 
-  let outputStream = new stream.Writable();
-  outputStream._write = function (data) {
-    console.log(data.toString());
-  };
-  proc.stdout.pipe(outputStream);
-
   process.stdin.on('data', function(data) {
-    proc.stdin.write(data + '\r\n');
+    let input = data.toString();
+    proc.stdin.write(input + '\r\n');
   });
 }
 

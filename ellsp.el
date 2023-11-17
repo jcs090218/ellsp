@@ -35,8 +35,9 @@
 (require 'lsp-mode)
 
 (require 'ellsp-log)
-(require 'ellsp-completion)
 (require 'ellsp-tdsync)
+(require 'ellsp-completion)
+(require 'ellsp-hover)
 
 (defgroup ellsp nil
   "Elisp Language Server."
@@ -86,15 +87,9 @@
                                           :resolve-provider? json-false
                                           :trigger-characters? [":" "-"])))))
 
-(defun ellsp--analyze-textDocument/hover (form _state _method params)
-  "")
-
-(defun ellsp--handle-textDocument/hover (id method params)
-  "")
-
 (defun ellsp--on-request (id method params)
+  "On request callback."
   (message "method: %s" method)
-  ;;(ellsp--trace ">> %s" (lsp--json-serialize (list :id id :method method :params params)))
   (let ((res
          (pcase method
            ("initialize"              (ellsp--initialize id params))
@@ -102,7 +97,7 @@
            ("textDocument/completion" (ellsp--handle-textDocument/completion id method params))
            ("textDocument/didOpen"    (ellsp--handle-textDocument/didOpen params))
            ("textDocument/didSave"    (ellsp--handle-textDocument/didSave))
-           ("textDocument/didChange"  (elsa-lsp--handle-textDocument/didChange id method params)))))
+           ("textDocument/didChange"  (ellsp--handle-textDocument/didChange id method params)))))
     (if (not res)
         (message "<< %s" "no response")
       (message "<< %s" (lsp--json-serialize res))
@@ -119,14 +114,15 @@
 
 (defun ellsp-stdin-loop ()
   "Reads from standard input in a loop and process incoming requests."
-  (ellsp--info "Starting the language server...")
+  ;;(ellsp--info "Starting the language server...")
   (let ((input)
         (has-header)
         (content-length))
     (while (progn (setq input (read-from-minibuffer "")) input)
-      (message ">> %s" input)
-      (ellsp--info input)
+      ;;(ellsp--info input)
       (cond
+       ((string= "some" input)
+        (ellsp-send-response "Hi, there!"))
        ((string-empty-p input) )
        ((and (null content-length)
              (string-match-p (rx "content-length: " (group (1+ digit))) input))
