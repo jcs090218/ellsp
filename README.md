@@ -25,7 +25,11 @@ Add these lines to your `Eask`-file:
 Then install the language server:
 
 ```sh
+# Install ellsp package
 $ eask install-deps --dev
+
+# Install the language server
+$ eask exec install-ellsp
 ```
 
 ## Contribute
