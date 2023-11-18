@@ -45,6 +45,18 @@
   :group 'tool
   :link '(url-link :tag "Repository" "https://github.com/jcs-elpa/ellsp"))
 
+;; XXX: Don't know why \r\n won't work with VSCode; and don't
+;; know why \n will work. :/
+;;
+;; This is currently a mystry to me!
+(defcustom ellsp-eol "\n"
+  "EOL for send messages."
+  :type 'string
+  :group 'ellsp)
+
+(defvar ellsp--running-p t
+  "Non-nil when the server is still running.")
+
 (defvar ellsp--initialized-p nil
   "Non-nil when it initialize successfully.")
 
@@ -53,7 +65,9 @@
   (when (or (hash-table-p msg)
             (and (listp msg) (plist-get msg :jsonrpc)))
     (setq msg (lsp--json-serialize msg)))
-  (setq msg (format "Content-Length: %d\n\n%s" (string-bytes msg) msg))
+  (setq msg (format "Content-Length: %d%s%s%s" (string-bytes msg)
+                    ellsp-eol ellsp-eol
+                    msg))
   (princ msg)
   (terpri)
   msg)
@@ -85,15 +99,21 @@
                    :text-document-sync? (lsp-make-text-document-sync-options
                                          :open-close? t
                                          :save? t
-                                         :change 1)
+                                         :change? 1)
                    :completion-provider? (lsp-make-completion-options
                                           :resolve-provider? json-false
-                                          :trigger-characters? [":" "-"])))))
+                                          :trigger-characters? [":" "-"])
+                   :signature-help-provider? (lsp-make-signature-help-options
+                                              :trigger-characters? [" "])))))
 
 (defun ellsp--initialized ()
   "After server initialization."
   (setq ellsp--initialized-p t)
   nil)
+
+(defun ellsp--shutdown ()
+  "Shutdown language server."
+  (setq ellsp--running-p nil))
 
 (defun ellsp--on-request (id method params)
   "On request callback."
@@ -102,6 +122,7 @@
          (pcase method
            ("initialize"              (ellsp--initialize id params))
            ("initialized"             (ellsp--initialized))
+           ("shutdown"                (ellsp--shutdown))
            ("textDocument/hover"      (ellsp--handle-textDocument/hover id method params))
            ("textDocument/completion" (ellsp--handle-textDocument/completion id method params))
            ("textDocument/didOpen"    (ellsp--handle-textDocument/didOpen params))
@@ -123,15 +144,16 @@
 
 (defun ellsp-stdin-loop ()
   "Reads from standard input in a loop and process incoming requests."
-  ;;(ellsp--info "Starting the language server...")
+  (ellsp--info "Starting the language server...")
   (let ((input)
         (has-header)
         (content-length))
-    (while (progn (setq input (read-from-minibuffer "")) input)
-      ;;(ellsp--info input)
+    (while (and ellsp--running-p
+                (progn
+                  (setq input (read-from-minibuffer ""))
+                  input))
+      (unless (string-empty-p input) (ellsp--info input))
       (cond
-       ((string= "some" input)
-        (ellsp-send-response "Hi, there!"))
        ((string-empty-p input) )
        ((and (null content-length)
              (string-match-p (rx "content-length: " (group (1+ digit))) input))

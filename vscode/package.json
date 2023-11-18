@@ -22,7 +22,10 @@
     "Programming Languages"
   ],
   "activationEvents": [
-    "onLanguage:elisp"
+    "ellsp.start",
+    "ellsp.stop",
+    "onLanguage:elisp",
+    "workspaceContains:**/*.el"
   ],
   "main": "./out/extension.js",
   "contributes": {
