@@ -45,18 +45,21 @@
   :group 'tool
   :link '(url-link :tag "Repository" "https://github.com/jcs-elpa/ellsp"))
 
+(defvar ellsp--initialized-p nil
+  "Non-nil when it initialize successfully.")
+
 (defun ellsp-send-response (msg)
   "Send response MSG."
   (when (or (hash-table-p msg)
             (and (listp msg) (plist-get msg :jsonrpc)))
     (setq msg (lsp--json-serialize msg)))
-  (setq msg (format "Content-Length: %d\r\n\r\n%s" (string-bytes msg) msg))
+  (setq msg (format "Content-Length: %d\n\n%s" (string-bytes msg) msg))
   (princ msg)
   (terpri)
   msg)
 
 (defun ellsp--uri-to-file (uri)
-  ""
+  "Convert URI to file."
   (substring uri 7))
 
 (defun ellsp-form-to-lsp-range (form)
@@ -87,12 +90,18 @@
                                           :resolve-provider? json-false
                                           :trigger-characters? [":" "-"])))))
 
+(defun ellsp--initialized ()
+  "After server initialization."
+  (setq ellsp--initialized-p t)
+  nil)
+
 (defun ellsp--on-request (id method params)
   "On request callback."
   (message "method: %s" method)
   (let ((res
          (pcase method
            ("initialize"              (ellsp--initialize id params))
+           ("initialized"             (ellsp--initialized))
            ("textDocument/hover"      (ellsp--handle-textDocument/hover id method params))
            ("textDocument/completion" (ellsp--handle-textDocument/completion id method params))
            ("textDocument/didOpen"    (ellsp--handle-textDocument/didOpen params))
