@@ -34,7 +34,7 @@ $ eask exec install-ellsp
 
 ## References
 
-- https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/
+- [Language Server Protocol Specification](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/)
 
 ## Contribute
 
