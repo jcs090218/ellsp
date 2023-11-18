@@ -34,7 +34,7 @@ function _get_current_directory()
   elif realpath -e -L "${0}" &>/dev/null
   then
     CDIR="$(realpath -e -L "${0}")"
-    CDIR="${CDIR%/eask}"
+    CDIR="${CDIR%/ellsp-install}"
   fi
 }
 
