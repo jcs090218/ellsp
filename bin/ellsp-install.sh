@@ -28,6 +28,4 @@ fi
 
 SDIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-echo ${SDIR}/${target}
-
 curl -fsSL https://github.com/jcs-elpa/ellsp/releases/download/0.0.0/${target} -o ${SDIR}/${target}
