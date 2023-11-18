@@ -41,4 +41,6 @@ function _get_current_directory()
 CDIR="$(pwd)"
 _get_current_directory
 
-curl -fsSL https://github.com/jcs-elpa/ellsp/releases/download/0.0.0/${target} -o ${CDIR}/${target}
+echo ${CDIR}
+
+#curl -fsSL https://github.com/jcs-elpa/ellsp/releases/download/0.0.0/${target} -o ${CDIR}/${target}
