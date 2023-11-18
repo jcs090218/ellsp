@@ -32,6 +32,10 @@ $ eask install-deps --dev
 $ eask exec install-ellsp
 ```
 
+## References
+
+- https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/
+
 ## Contribute
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
