@@ -26,21 +26,8 @@ else
   esac
 fi
 
-function _get_current_directory()
-{
-  if dirname "$(readlink -f "${0}")" &>/dev/null
-  then
-    CDIR="$(cd "$(dirname "$(readlink -f "${0}")")" && pwd)"
-  elif realpath -e -L "${0}" &>/dev/null
-  then
-    CDIR="$(realpath -e -L "${0}")"
-    CDIR="${CDIR%/ellsp-install}"
-  fi
-}
+SDIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-CDIR="$(pwd)"
-_get_current_directory
-
-echo ${CDIR}
+echo ${SDIR}
 
 #curl -fsSL https://github.com/jcs-elpa/ellsp/releases/download/0.0.0/${target} -o ${CDIR}/${target}
