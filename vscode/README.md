@@ -8,7 +8,12 @@
 
 ## 💾 Installation
 
-WIP
+Install the [Ellsp][] extension directly from the [VSCode Marketplace][].
+
+<img alt="installation" src="./etc/installation.png"/>
+
+Then follow the instructions [here](https://github.com/jcs090218/ellsp#-installation)
+to install the language server! 🎉
 
 ## 📇 Commands
 
@@ -16,3 +21,7 @@ WIP
 |:--------------|:-----------------------------------|
 | `ellsp.start` | Start the `shader langauge server` |
 | `ellsp.stop`  | Stop the `shader langauge server`  |
+
+
+[Ellsp]: https://marketplace.visualstudio.com/items?itemName=jcs090218.Ellsp
+[VSCode Marketplace]: https://marketplace.visualstudio.com/vscode
