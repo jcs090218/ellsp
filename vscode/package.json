@@ -1,6 +1,6 @@
 {
-  "name": "ellsp",
-  "displayName": "ellsp",
+  "name": "Ellsp",
+  "displayName": "Ellsp",
   "description": "Emacs Lisp languages support for Visual Studio Code",
   "version": "0.1.0",
   "icon": "./etc/logo.png",

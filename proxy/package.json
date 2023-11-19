@@ -1,7 +1,7 @@
 {
-  "name": "ellsp",
+  "name": "ellsp-proxy",
   "version": "0.0.1",
-  "description": "Emacs Lisp Language Server",
+  "description": "Elisp Language Server (proxy)",
   "main": "start.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
