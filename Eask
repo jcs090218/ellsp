@@ -17,6 +17,7 @@
 
 (depends-on "emacs" "27.1")
 (depends-on "lsp-mode")
+(depends-on "company")
 (depends-on "log4e")
 (depends-on "dash")
 (depends-on "s")

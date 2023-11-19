@@ -6,7 +6,7 @@
 ;; Maintainer: Shen, Jen-Chieh <jcs090218@gmail.com>
 ;; URL: https://github.com/jcs-elpa/ellsp
 ;; Version: 0.1.0
-;; Package-Requires: ((emacs "27.1") (lsp-mode "6.0.1") (log4e "0.1.0") (dash "2.14.1") (s "1.12.0"))
+;; Package-Requires: ((emacs "27.1") (lsp-mode "6.0.1") (log4e "0.1.0") (dash "2.14.1") (s "1.12.0") (company "0.8.12"))
 ;; Keywords: convenience lsp
 
 ;; This file is not part of GNU Emacs.
@@ -31,7 +31,7 @@
 
 ;;; Code:
 
-(require 'rx)
+(require 'pcase)
 (require 'lsp-mode)
 (require 'dash)
 (require 's)
@@ -40,6 +40,7 @@
 (require 'ellsp-tdsync)
 (require 'ellsp-completion)
 (require 'ellsp-hover)
+(require 'ellsp-signature)
 
 (defgroup ellsp nil
   "Elisp Language Server."
@@ -61,6 +62,10 @@
 
 (defvar ellsp--initialized-p nil
   "Non-nil when it initialize successfully.")
+
+(defun ellsp-2str (obj)
+  "Convert OBJ to string."
+  (format "%s" obj))
 
 (defun ellsp-send-response (msg)
   "Send response MSG."
@@ -99,8 +104,7 @@
                                          :save? t
                                          :change? 1)
                    :completion-provider? (lsp-make-completion-options
-                                          :resolve-provider? json-false
-                                          :trigger-characters? [":" "-"])
+                                          :resolve-provider? json-false)
                    :signature-help-provider? (lsp-make-signature-help-options
                                               :trigger-characters? [" "])))))
 
@@ -118,14 +122,15 @@
   (message "method: %s" method)
   (let ((res
          (pcase method
-           ("initialize"              (ellsp--initialize id params))
-           ("initialized"             (ellsp--initialized))
-           ("shutdown"                (ellsp--shutdown))
-           ("textDocument/hover"      (ellsp--handle-textDocument/hover id method params))
-           ("textDocument/completion" (ellsp--handle-textDocument/completion id method params))
-           ("textDocument/didOpen"    (ellsp--handle-textDocument/didOpen params))
-           ("textDocument/didSave"    (ellsp--handle-textDocument/didSave))
-           ("textDocument/didChange"  (ellsp--handle-textDocument/didChange id method params)))))
+           ("initialize"                 (ellsp--initialize id params))
+           ("initialized"                (ellsp--initialized))
+           ("shutdown"                   (ellsp--shutdown))
+           ("textDocument/didOpen"       (ellsp--handle-textDocument/didOpen params))
+           ("textDocument/didSave"       (ellsp--handle-textDocument/didSave))
+           ("textDocument/didChange"     (ellsp--handle-textDocument/didChange id method params))
+           ("textDocument/completion"    (ellsp--handle-textDocument/completion id method params))
+           ("textDocument/hover"         (ellsp--handle-textDocument/hover id method params))
+           ("textDocument/signatureHelp" (ellsp--handle-textDocument/signatureHelp id)))))
     (if (not res)
         (message "<< %s" "no response")
       (message "<< %s" (lsp--json-serialize res))
@@ -140,6 +145,8 @@
   (and length
        (= (length input) length)))
 
+(defvar ellsp-next-input nil)
+
 (defun ellsp-stdin-loop ()
   "Reads from standard input in a loop and process incoming requests."
   (ellsp--info "Starting the language server...")
@@ -148,25 +155,56 @@
         (content-length))
     (while (and ellsp--running-p
                 (progn
-                  (setq input (read-from-minibuffer ""))
+                  (setq input (or ellsp-next-input
+                                  (read-from-minibuffer "")))
                   input))
       (unless (string-empty-p input)
         ;; XXX: Function `s-replace' is used to avoid the following error:
         ;;
         ;; Invalid use of `\' in replacement text ...
         (ellsp--info (s-replace "\\" "\\\\" input)))
+      (setq ellsp-next-input nil)  ; Reset
       (cond
        ((string-empty-p input) )
        ((and (null content-length)
-             (string-match-p (rx "content-length: " (group (1+ digit))) input))
+             (string-prefix-p "content-length: " input t))
         (setq content-length (ellsp--get-content-length input)))
-       ((ellsp--check-content-type input content-length)
+       (content-length
+        (when (string-match-p "content-length: [0-9\r\n]+$" input)
+          (with-temp-buffer
+            (insert input)
+            (when (search-backward "content-length: " nil t)
+              (setq input (buffer-substring-no-properties (point-min) (point))
+                    ellsp-next-input (buffer-substring-no-properties (point) (point-max))))))
         (-let* (((&JSONResponse :params :method :id) (lsp--read-json input)))
           (condition-case err
               (ellsp--on-request id method params)
             (error (ellsp--error "Ellsp error: %s"
                                  (error-message-string err)))))
         (setq content-length nil))))))
+
+;;;###autoload
+(defun ellsp-register ()
+  (interactive)
+  (add-to-list 'lsp-language-id-configuration '(emacs-lisp-mode . "emacs-lisp"))
+  (lsp-register-client
+   (make-lsp-client
+    :new-connection (lsp-stdio-connection
+                     (lambda ()
+                       (cond
+                        ((locate-dominating-file (buffer-file-name) "Eask")
+                         (list "eask" "exec"
+                               (pcase system-type
+                                 ('windows-nt
+                                  "ellsp-win.exe")
+                                 ('darwin
+                                  "ellsp-macos")
+                                 ((or 'gnu 'gnu/linux 'gnu/kfreebsd)
+                                  "ellsp-linux"))))
+                        (t (error "Ellsp Language Server can only run with Eask")))))
+    :major-modes '(emacs-lisp-mode)
+    :priority 1
+    :server-id 'ellsp)))
 
 (provide 'ellsp)
 ;;; ellsp.el ends here

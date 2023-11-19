@@ -24,6 +24,10 @@
 
 ;;; Code:
 
+(require 'company)
+(require 'company-capf)
+(require 'lsp-completion)
+
 (cl-defun ellsp--list-completion-items (list &key transform kind)
   ""
   (setq transform (or transform #'identity))
@@ -69,42 +73,48 @@
   ;; only used to extract start and end... we can reimplement it later
   (-when-let ((beg end) (ellsp--completions-bounds))
     (message "bounds %s %s" beg end)
-    (let* ((candidates nil)
+    (let* ((candidates)
            (funpos (eq (char-before beg) ?\())
            (prefix (buffer-substring-no-properties beg end)))
       (message "prefix %s" prefix)
-      (cond
-       (funpos
-        (maphash
-         (lambda (k v)
-           (when (string-prefix-p prefix (symbol-name k))
-             (push v candidates)))
-         (oref elsa-global-state defuns))
-        (message "has %d functions for prefix %s" (length candidates) prefix)))
       candidates)))
+
+(defun ellsp--convert-kind (kind)
+  "Convert company's KIND to lsp-mode's kind."
+  (setq kind (ellsp-2str kind))
+  (cl-position (capitalize kind) lsp-completion--item-kind :test #'equal))
 
 (defun ellsp--capf-completions ()
   "Fallback completions engine is the `elisp-completion-at-point'."
-  (-when-let ((start end table . props) (elisp-completion-at-point))
-    (-let* ((predicate (plist-get props :predicate))
-            (prefix (buffer-substring-no-properties start end))
-            (meta (completion-metadata prefix table predicate))
-            (candidates (completion-all-completions
-                         prefix table predicate (length prefix) meta))
-            (last (last candidates))
-            (base-size (and (numberp (cdr last)) (cdr last))))
-      (when base-size
-        (setcdr last nil))
-      candidates)))
+  (let* ((prefix (company-capf 'prefix))
+         (candidates (company-capf 'candidates prefix)))
+    (mapcar (lambda (candidate)
+              (lsp-make-completion-item
+               :label candidate
+               :documentation? (company-capf 'annotation candidate)
+               :deprecated? (if (null (company-capf 'deprecated candidate))
+                                json-false
+                              t)
+               :kind? (ellsp--convert-kind (company-capf 'kind candidate))))
+            candidates)))
 
 (defun ellsp--handle-textDocument/completion (id method params)
-  "Handle text completions."
+  "Handle method `textDocument/completion'."
   (-let* (((&CompletionParams :text-document (&TextDocumentIdentifier :uri)
                               :position (&Position :line :character))
            params)
           (file (lsp--uri-to-path uri))
           (buffer (ellsp-get-buffer ellsp-workspace file)))
-    ))
+    (when buffer
+      (with-current-buffer buffer
+        (goto-char (point-min))
+        (forward-line line)
+        (forward-char character)
+        (lsp--make-response
+         id
+         (lsp-make-completion-list
+          :is-incomplete json-false
+          :items (apply #'vector (ellsp--capf-completions))))))))
 
 (provide 'ellsp-completion)
 ;;; ellsp-completion.el ends here

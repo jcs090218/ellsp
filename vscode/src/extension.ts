@@ -44,7 +44,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// Create the language client and start the client.
 	client = new LanguageClient(
 		'ellsp', 
-		'Emacs Lisp Language Server',
+		'Elisp Language Server',
 		serverOptions,
 		clientOptions
 	);

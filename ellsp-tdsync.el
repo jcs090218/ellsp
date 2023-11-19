@@ -80,13 +80,15 @@ be re-analysed during textDocument/didOpen handler.")))
   "On method `textDocument/didOpen'."
   (-let* (((&DidOpenTextDocumentParams :text-document (&TextDocumentItem :uri :version)) params)
           (file (lsp--uri-to-path uri)))
-    (ellsp-add-file ellsp-workspace file)))
+    (ellsp-add-file ellsp-workspace file)
+    nil))
 
 (defun ellsp--handle-textDocument/didSave ()
   "On method `textDocument/didSave'."
   (-let* (((&DidSaveTextDocumentParams :text-document (&TextDocumentItem :uri :version)) params)
           (file (lsp--uri-to-path uri)))
-    (ellsp-update-file-buffer ellsp-workspace file)))
+    (ellsp-update-file-buffer ellsp-workspace file)
+    nil))
 
 (defun ellsp--handle-textDocument/didChange (id method params)
   "On method `textDocument/didChange'."
@@ -96,7 +98,8 @@ be re-analysed during textDocument/didOpen handler.")))
            params)
           (file (lsp--uri-to-path uri))
           (buffer (ellsp-get-buffer ellsp-workspace file)))
-    (ellsp-update-file-buffer ellsp-workspace file text)))
+    (ellsp-update-file-buffer ellsp-workspace file text)
+    nil))
 
 (provide 'ellsp-tdsync)
 ;;; ellsp-tdsync.el ends here

@@ -24,8 +24,52 @@
 
 ;;; Code:
 
+(defun ellsp--describe-string ()
+  "Return the describe symbol string."
+  (let ((thing (symbol-at-point)))
+    (with-current-buffer (help-buffer)
+      (let (buffer-read-only) (erase-buffer))
+      (describe-symbol thing)
+      (buffer-string))))
+
+(defun ellsp--describe-at-point ()
+  "Describe symbol at point."
+  (when-let (((derived-mode-p 'lisp-data-mode))
+             (desc (ellsp--describe-string)))
+    (if (or (string-empty-p desc)
+            (string= (string-trim desc) "[back]"))
+        nil
+      desc)))
+
 (defun ellsp--handle-textDocument/hover (id method params)
-  "")
+  "Handle method `textDocument/hover'."
+  (-let* (((&HoverParams :text-document (&TextDocumentIdentifier :uri)
+                         :position (&Position :line :character))
+           params)
+          (file (lsp--uri-to-path uri))
+          (buffer (ellsp-get-buffer ellsp-workspace file)))
+    (when buffer
+      (with-current-buffer buffer
+        (goto-char (point-min))
+        (forward-line line)
+        (forward-char character)
+        (when-let ((desc (ellsp--describe-at-point))
+                   (line (line-number-at-pos nil t))
+                   (column-beg (save-excursion (forward-symbol -1) (current-column)))
+                   (column-end (save-excursion (forward-symbol 1) (current-column))))
+          (lsp--make-response
+           id
+           (lsp-make-hover
+            :contents (lsp-make-markup-content
+                       :kind "plaintext"
+                       :value desc)
+            :range (lsp-make-range
+                    :start (lsp-make-position
+                            :line line
+                            :character column-beg)
+                    :end (lsp-make-position
+                          :line line
+                          :character column-end)))))))))
 
 (provide 'ellsp-hover)
 ;;; ellsp-hover.el ends here

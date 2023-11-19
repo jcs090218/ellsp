@@ -2,10 +2,13 @@
 [![JCS-ELPA](https://raw.githubusercontent.com/jcs-emacs/badges/master/elpa/v/ellsp.svg)](https://jcs-emacs.github.io/jcs-elpa/#/ellsp)
 
 # ellsp
-> Emacs Lisp Language Server
+> Elisp Language Server
 
 [![CI Elisp](https://github.com/jcs-elpa/ellsp/actions/workflows/test-elisp.yml/badge.svg)](https://github.com/jcs-elpa/ellsp/actions/workflows/test-elisp.yml)
 [![CI VSCode](https://github.com/jcs-elpa/ellsp/actions/workflows/test-vscode.yml/badge.svg)](https://github.com/jcs-elpa/ellsp/actions/workflows/test-vscode.yml)
+
+This software is designed to be used with editors other than Emacs. If you are
+an Emacs user already, I prefer you use Emacs directly.
 
 ## 🔧 Prerequisites
 
