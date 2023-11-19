@@ -40,33 +40,20 @@
 We use this list to remove dependencies which don't need to
 be re-analysed during textDocument/didOpen handler.")))
 
-(defvar ellsp-state (ellsp-state)
-  "")
+(defvar ellsp-workspace (ellsp-state)
+  "Workspace state.")
 
 (cl-defmethod ellsp-get-file ((state ellsp-state) (file string))
-  ""
+  "Return the file if found."
   (gethash file (oref state files)))
 
 (cl-defmethod ellsp-get-buffer ((state ellsp-state) (file string))
-  ""
+  "Get the buffer from workspace state."
   (when-let ((file (ellsp-get-file state file)))
     (oref file buffer)))
 
-(cl-defmethod ellsp-add-file ((state ellsp-state) (file string))
-  ""
-  (message "Added file %s to state" file)
-  (puthash file
-           (ellsp-file
-            :name file
-            :buffer (with-current-buffer
-                        (get-buffer-create (concat "ellsp-" file))
-                      (emacs-lisp-mode)
-                      (current-buffer)))
-           (oref state files))
-  (ellsp-update-file-buffer state file))
-
 (cl-defmethod ellsp-update-file-buffer ((state ellsp-state) (file string) &optional content)
-  ""
+  "Sync the text document buffer."
   (message "Trying to update file %s" file)
   (when-let ((buffer (ellsp-get-buffer state file)))
     (with-current-buffer buffer
@@ -76,20 +63,33 @@ be re-analysed during textDocument/didOpen handler.")))
         (insert-file-contents file)))
     (message "Updated file %s" file)))
 
+(cl-defmethod ellsp-add-file ((state ellsp-state) (file string))
+  "Add a file to workspace."
+  (message "Added file %s to state" file)
+  (puthash file
+           (ellsp-file
+            :name file
+            :buffer (with-current-buffer
+                        (get-buffer-create (format "*ellsp:%s*" file))
+                      (emacs-lisp-mode)
+                      (current-buffer)))
+           (oref state files))
+  (ellsp-update-file-buffer state file))
+
 (defun ellsp--handle-textDocument/didOpen (params)
-  ""
+  "On method `textDocument/didOpen'."
   (-let* (((&DidOpenTextDocumentParams :text-document (&TextDocumentItem :uri :version)) params)
-          (file (ellsp--uri-to-file uri)))
-    (ellsp-update-file-buffer ellsp-state file)))
+          (file (lsp--uri-to-path uri)))
+    (ellsp-add-file ellsp-workspace file)))
 
 (defun ellsp--handle-textDocument/didSave ()
-  ""
+  "On method `textDocument/didSave'."
   (-let* (((&DidSaveTextDocumentParams :text-document (&TextDocumentItem :uri :version)) params)
-          (file (ellsp--uri-to-file uri)))
-    (ellsp-update-file-buffer ellsp-state file)))
+          (file (lsp--uri-to-path uri)))
+    (ellsp-update-file-buffer ellsp-workspace file)))
 
 (defun ellsp--handle-textDocument/didChange (id method params)
-  "")
+  "On method `textDocument/didChange'.")
 
 (provide 'ellsp-tdsync)
 ;;; ellsp-tdsync.el ends here

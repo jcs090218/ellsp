@@ -73,10 +73,6 @@
   (terpri)
   msg)
 
-(defun ellsp--uri-to-file (uri)
-  "Convert URI to file."
-  (substring uri 7))
-
 (defun ellsp-form-to-lsp-range (form)
   "Convert FORM to LSP range."
   (lsp-make-range
