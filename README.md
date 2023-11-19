@@ -54,6 +54,7 @@ $ eask exec install-ellsp
 ## 🔗 References
 
 - [Language Server Protocol Specification](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/)
+- [Elsa](https://github.com/emacs-elsa/Elsa)
 
 ## Contribute
 
