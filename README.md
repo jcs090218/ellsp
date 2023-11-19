@@ -41,6 +41,16 @@ $ eask install-deps --dev
 $ eask exec install-ellsp
 ```
 
+## Gallery
+
+### Completion
+
+<img src="./etc/completion.png"/>
+
+### Hover
+
+<img src="./etc/hover.png"/>
+
 ## 🔗 References
 
 - [Language Server Protocol Specification](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/)
