@@ -14,6 +14,16 @@ Here is the list of currently supported editors:
 
 - [VSCode](https://marketplace.visualstudio.com/items?itemName=jcs090218.Ellsp)
 
+## Gallery
+
+### Completion
+
+<img src="./etc/completion.png"/>
+
+### Hover
+
+<img src="./etc/hover.png"/>
+
 ## 🔧 Prerequisites
 
 Before installation, make sure you have all the following software installed!
@@ -40,16 +50,6 @@ $ eask install-deps --dev
 # Install the language server
 $ eask exec install-ellsp
 ```
-
-## Gallery
-
-### Completion
-
-<img src="./etc/completion.png"/>
-
-### Hover
-
-<img src="./etc/hover.png"/>
 
 ## 🔗 References
 
