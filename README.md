@@ -45,11 +45,11 @@ $ eask exec install-ellsp
 
 ### Completion
 
-<img src="./etc/completion.png" width="50%"/>
+<img src="./etc/completion.png"/>
 
 ### Hover
 
-<img src="./etc/hover.png" width="50%"/>
+<img src="./etc/hover.png"/>
 
 ## 🔗 References
 
