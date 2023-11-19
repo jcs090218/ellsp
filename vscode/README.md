@@ -10,7 +10,7 @@
 
 Install the [Ellsp][] extension directly from the [VSCode Marketplace][].
 
-<img alt="installation" src="./etc/installation.png"/>
+<img alt="installation" src="https://raw.githubusercontent.com/jcs090218/ellsp/master/vscode/etc/installation.png"/>
 
 Then follow the instructions [here](https://github.com/jcs090218/ellsp#-installation)
 to install the language server! 🎉
