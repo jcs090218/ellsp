@@ -89,7 +89,14 @@ be re-analysed during textDocument/didOpen handler.")))
     (ellsp-update-file-buffer ellsp-workspace file)))
 
 (defun ellsp--handle-textDocument/didChange (id method params)
-  "On method `textDocument/didChange'.")
+  "On method `textDocument/didChange'."
+  (-let* (((&DidChangeTextDocumentParams
+            :text-document (&VersionedTextDocumentIdentifier :uri :version?)
+            :content-changes [(&TextDocumentContentChangeEvent :text)])
+           params)
+          (file (lsp--uri-to-path uri))
+          (buffer (ellsp-get-buffer ellsp-workspace file)))
+    (ellsp-update-file-buffer ellsp-workspace file text)))
 
 (provide 'ellsp-tdsync)
 ;;; ellsp-tdsync.el ends here

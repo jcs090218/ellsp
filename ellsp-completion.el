@@ -98,7 +98,13 @@
       candidates)))
 
 (defun ellsp--handle-textDocument/completion (id method params)
-  "Handle text completions.")
+  "Handle text completions."
+  (-let* (((&CompletionParams :text-document (&TextDocumentIdentifier :uri)
+                              :position (&Position :line :character))
+           params)
+          (file (lsp--uri-to-path uri))
+          (buffer (ellsp-get-buffer ellsp-workspace file)))
+    ))
 
 (provide 'ellsp-completion)
 ;;; ellsp-completion.el ends here
