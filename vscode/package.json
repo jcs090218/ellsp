@@ -2,14 +2,14 @@
   "name": "Ellsp",
   "displayName": "Ellsp",
   "description": "Emacs Lisp languages support for Visual Studio Code",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "icon": "./etc/logo.png",
   "engines": {
     "vscode": "^1.81.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jcs090218/vscode-ellsp"
+    "url": "https://github.com/jcs090218/ellsp"
   },
   "publisher": "jcs090218",
   "keywords": [

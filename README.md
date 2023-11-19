@@ -10,6 +10,10 @@
 This software is designed to be used with editors other than Emacs. If you are
 an Emacs user already, I prefer you use Emacs directly.
 
+Here is the list of currently supported editors:
+
+- [VSCode](https://marketplace.visualstudio.com/items?itemName=jcs090218.Ellsp)
+
 ## 🔧 Prerequisites
 
 - [Eask](https://github.com/emacs-eask/cli)
