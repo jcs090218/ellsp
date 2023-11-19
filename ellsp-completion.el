@@ -43,7 +43,8 @@
     (mapcar (lambda (candidate)
               (lsp-make-completion-item
                :label candidate
-               :documentation? (company-capf 'annotation candidate)
+               ;; :documentation? (or (ignore-errors (documentation (intern candidate)))
+               ;;                     "No documentation")
                :deprecated? (if (null (company-capf 'deprecated candidate))
                                 json-false
                               t)

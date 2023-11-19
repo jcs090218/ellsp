@@ -6,7 +6,7 @@
 ;; Maintainer: Shen, Jen-Chieh <jcs090218@gmail.com>
 ;; URL: https://github.com/jcs-elpa/ellsp
 ;; Version: 0.1.0
-;; Package-Requires: ((emacs "27.1") (lsp-mode "6.0.1") (log4e "0.1.0") (dash "2.14.1") (s "1.12.0") (company "0.8.12"))
+;; Package-Requires: ((emacs "27.1") (lsp-mode "6.0.1") (log4e "0.1.0") (dash "2.14.1") (s "1.12.0") (company "0.8.12") (msgu "0.1.0"))
 ;; Keywords: convenience lsp
 
 ;; This file is not part of GNU Emacs.
@@ -35,6 +35,7 @@
 (require 'lsp-mode)
 (require 'dash)
 (require 's)
+(require 'msgu)
 
 (require 'ellsp-log)
 (require 'ellsp-tdsync)
@@ -62,6 +63,11 @@
 
 (defvar ellsp--initialized-p nil
   "Non-nil when it initialize successfully.")
+
+(defcustom ellsp-initialized-hook nil
+  "Hook runs after the server is initialized."
+  :type 'hook
+  :group 'ellsp)
 
 (defun ellsp-2str (obj)
   "Convert OBJ to string."
@@ -101,6 +107,7 @@
 (defun ellsp--initialized ()
   "After server initialization."
   (setq ellsp--initialized-p t)
+  (run-hooks 'ellsp-initialized-hook)
   nil)
 
 (defun ellsp--shutdown ()

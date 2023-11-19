@@ -29,7 +29,7 @@
   (let ((thing (symbol-at-point)))
     (with-current-buffer (help-buffer)
       (let (buffer-read-only) (erase-buffer))
-      (describe-symbol thing)
+      (msgu-silent (describe-symbol thing))
       (buffer-string))))
 
 (defun ellsp--describe-at-point ()

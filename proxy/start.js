@@ -58,8 +58,6 @@ function main() {
   process.stdin.on('data', function(data) {
     //console.error(data.toString());
     let input = data.toString();
-    if (input.includes('}Content-Length: '))
-      
     proc.stdin.write(input + '\r\n');
   });
 }
