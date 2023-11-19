@@ -41,7 +41,7 @@
         nil
       desc)))
 
-(defun ellsp--handle-textDocument/hover (id method params)
+(defun ellsp--handle-textDocument/hover (id params)
   "Handle method `textDocument/hover'."
   (-let* (((&HoverParams :text-document (&TextDocumentIdentifier :uri)
                          :position (&Position :line :character))

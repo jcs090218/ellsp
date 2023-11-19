@@ -79,17 +79,7 @@
   (terpri)
   msg)
 
-(defun ellsp-form-to-lsp-range (form)
-  "Convert FORM to LSP range."
-  (lsp-make-range
-   :start (lsp-make-position
-           :line (1- (oref form line))
-           :character (oref form column))
-   :end (lsp-make-position
-         :line (1- (oref form end-line))
-         :character  (oref form end-column))))
-
-(defun ellsp--initialize (id params)
+(defun ellsp--initialize (id)
   "Initialize the language server."
   (lsp--make-response
    id
@@ -122,15 +112,15 @@
   (message "method: %s" method)
   (let ((res
          (pcase method
-           ("initialize"                 (ellsp--initialize id params))
+           ("initialize"                 (ellsp--initialize id))
            ("initialized"                (ellsp--initialized))
            ("shutdown"                   (ellsp--shutdown))
            ("textDocument/didOpen"       (ellsp--handle-textDocument/didOpen params))
-           ("textDocument/didSave"       (ellsp--handle-textDocument/didSave))
-           ("textDocument/didChange"     (ellsp--handle-textDocument/didChange id method params))
-           ("textDocument/completion"    (ellsp--handle-textDocument/completion id method params))
-           ("textDocument/hover"         (ellsp--handle-textDocument/hover id method params))
-           ("textDocument/signatureHelp" (ellsp--handle-textDocument/signatureHelp id)))))
+           ("textDocument/didSave"       (ellsp--handle-textDocument/didSave params))
+           ("textDocument/didChange"     (ellsp--handle-textDocument/didChange params))
+           ("textDocument/completion"    (ellsp--handle-textDocument/completion id params))
+           ("textDocument/hover"         (ellsp--handle-textDocument/hover id params))
+           ("textDocument/signatureHelp" (ellsp--handle-textDocument/signatureHelp id params)))))
     (if (not res)
         (message "<< %s" "no response")
       (message "<< %s" (lsp--json-serialize res))
@@ -151,7 +141,6 @@
   "Reads from standard input in a loop and process incoming requests."
   (ellsp--info "Starting the language server...")
   (let ((input)
-        (has-header)
         (content-length))
     (while (and ellsp--running-p
                 (progn

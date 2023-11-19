@@ -26,12 +26,13 @@
 
 (require 'log4e)
 
-(log4e:deflogger "ellsp" "%t [%l] %m" "%H:%M:%S" '((fatal . "fatal")
-                                                   (error . "error")
-                                                   (warn  . "warn")
-                                                   (info  . "info")
-                                                   (debug . "debug")
-                                                   (trace . "trace")))
+(with-no-warnings
+  (log4e:deflogger "ellsp" "%t [%l] %m" "%H:%M:%S" '((fatal . "fatal")
+                                                     (error . "error")
+                                                     (warn  . "warn")
+                                                     (info  . "info")
+                                                     (debug . "debug")
+                                                     (trace . "trace"))))
 
 (ellsp--log-enable-debugging)
 (ellsp--log-enable-messaging)

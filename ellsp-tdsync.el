@@ -83,14 +83,14 @@ be re-analysed during textDocument/didOpen handler.")))
     (ellsp-add-file ellsp-workspace file)
     nil))
 
-(defun ellsp--handle-textDocument/didSave ()
+(defun ellsp--handle-textDocument/didSave (params)
   "On method `textDocument/didSave'."
   (-let* (((&DidSaveTextDocumentParams :text-document (&TextDocumentItem :uri :version)) params)
           (file (lsp--uri-to-path uri)))
     (ellsp-update-file-buffer ellsp-workspace file)
     nil))
 
-(defun ellsp--handle-textDocument/didChange (id method params)
+(defun ellsp--handle-textDocument/didChange (params)
   "On method `textDocument/didChange'."
   (-let* (((&DidChangeTextDocumentParams
             :text-document (&VersionedTextDocumentIdentifier :uri :version?)

@@ -25,7 +25,7 @@
 ;;; Code:
 
 (defun ellsp--signatures ()
-  ""
+  "Return a list of signature items."
   (let* ((prefix (company-capf 'prefix))
          (candidates (company-capf 'candidates prefix)))
     (mapcar (lambda (candidate)
@@ -34,7 +34,7 @@
                :parameters? ""))
             candidates)))
 
-(defun ellsp--handle-textDocument/signatureHelp (id)
+(defun ellsp--handle-textDocument/signatureHelp (id parmas)
   "Handle method `textDocument/signatureHelp'."
   (-let* (((&SignatureHelpParams :text-document (&TextDocumentIdentifier :uri)
                                  :position (&Position :line :character))

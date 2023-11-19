@@ -16,6 +16,8 @@ Here is the list of currently supported editors:
 
 ## 🔧 Prerequisites
 
+Before installation, make sure you have all the following software installed!
+
 - [Eask](https://github.com/emacs-eask/cli)
 
 ## 💾 Installation

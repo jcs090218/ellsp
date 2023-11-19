@@ -28,61 +28,13 @@
 (require 'company-capf)
 (require 'lsp-completion)
 
-(cl-defun ellsp--list-completion-items (list &key transform kind)
-  ""
-  (setq transform (or transform #'identity))
-  (apply #'vector
-         (mapcar
-          (lambda (item)
-            (let ((completion (funcall transform item)))
-              (lsp-make-completion-item
-               :label (if (listp completion)
-                          (plist-get completion :label)
-                        completion)
-               :kind (if (listp completion)
-                         (plist-get completion :kind)
-                       (or kind lsp/completion-item-kind-text)))))
-          list)))
-
-(defun ellsp--completions-bounds ()
-  ""
-  (with-syntax-table emacs-lisp-mode-syntax-table
-    (message "completion bounds point %s" (point))
-    (let* ((pos (point))
-           (beg (condition-case nil
-                    (save-excursion
-                      (backward-sexp 1)
-                      (skip-chars-forward "`',‘#")
-                      (point))
-                  (scan-error pos)))
-           (end
-            (unless (or (eq beg (point-max))
-                        (member (char-syntax (char-after beg))
-                                '(?\" ?\()))
-              (condition-case nil
-                  (save-excursion
-                    (goto-char beg)
-                    (forward-sexp 1)
-                    (skip-chars-backward "'’")
-                    (when (>= (point) pos)
-                      (point)))
-                (scan-error pos)))))
-      (list beg end))))
-
-(defun ellsp--function-completions ()
-  ;; only used to extract start and end... we can reimplement it later
-  (-when-let ((beg end) (ellsp--completions-bounds))
-    (message "bounds %s %s" beg end)
-    (let* ((candidates)
-           (funpos (eq (char-before beg) ?\())
-           (prefix (buffer-substring-no-properties beg end)))
-      (message "prefix %s" prefix)
-      candidates)))
+(declare-function ellsp-2str "ellsp.el")
 
 (defun ellsp--convert-kind (kind)
   "Convert company's KIND to lsp-mode's kind."
   (setq kind (ellsp-2str kind))
-  (cl-position (capitalize kind) lsp-completion--item-kind :test #'equal))
+  (or (cl-position (capitalize kind) lsp-completion--item-kind :test #'equal)
+      lsp/completion-item-kind-text))
 
 (defun ellsp--capf-completions ()
   "Fallback completions engine is the `elisp-completion-at-point'."
@@ -98,7 +50,7 @@
                :kind? (ellsp--convert-kind (company-capf 'kind candidate))))
             candidates)))
 
-(defun ellsp--handle-textDocument/completion (id method params)
+(defun ellsp--handle-textDocument/completion (id params)
   "Handle method `textDocument/completion'."
   (-let* (((&CompletionParams :text-document (&TextDocumentIdentifier :uri)
                               :position (&Position :line :character))
