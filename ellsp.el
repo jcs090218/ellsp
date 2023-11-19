@@ -6,7 +6,7 @@
 ;; Maintainer: Shen, Jen-Chieh <jcs090218@gmail.com>
 ;; URL: https://github.com/jcs-elpa/ellsp
 ;; Version: 0.1.0
-;; Package-Requires: ((emacs "27.1") (lsp-mode "6.0.1") (log4e "0.1.0"))
+;; Package-Requires: ((emacs "27.1") (lsp-mode "6.0.1") (log4e "0.1.0") (s "1.12.0"))
 ;; Keywords: convenience lsp
 
 ;; This file is not part of GNU Emacs.
@@ -33,6 +33,7 @@
 
 (require 'rx)
 (require 'lsp-mode)
+(require 's)
 
 (require 'ellsp-log)
 (require 'ellsp-tdsync)
@@ -152,7 +153,11 @@
                 (progn
                   (setq input (read-from-minibuffer ""))
                   input))
-      (unless (string-empty-p input) (ellsp--info input))
+      (unless (string-empty-p input)
+        ;; XXX: Function `s-replace' is used to avoid the following error:
+        ;;
+        ;; Invalid use of `\' in replacement text ...
+        (ellsp--info (s-replace "\\" "\\\\" input)))
       (cond
        ((string-empty-p input) )
        ((and (null content-length)

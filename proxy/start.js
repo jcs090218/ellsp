@@ -56,6 +56,7 @@ function main() {
     return;
 
   process.stdin.on('data', function(data) {
+    //console.error(data.toString());
     let input = data.toString();
     proc.stdin.write(input + '\r\n');
   });
