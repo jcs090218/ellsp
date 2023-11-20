@@ -31,6 +31,7 @@
 
 ;;; Code:
 
+(require 'cl-lib)
 (require 'pcase)
 (require 'lsp-mode)
 (require 'dash)
@@ -128,10 +129,16 @@
            ("textDocument/completion"    (ellsp--handle-textDocument/completion id params))
            ("textDocument/hover"         (ellsp--handle-textDocument/hover id params))
            ("textDocument/signatureHelp" (ellsp--handle-textDocument/signatureHelp id params)))))
-    (if (not res)
-        (message "<< %s" "no response")
-      (message "<< %s" (lsp--json-serialize res))
-      (ellsp-send-response (lsp--json-serialize res)))))
+    (cond ((not res)
+           (message "<< %s" "no response"))
+          ((when-let ((res (ignore-errors (lsp--json-serialize res))))
+             (message "<< %s" res)
+             (ellsp-send-response res)))
+          ((when-let ((res (ignore-errors (json-encode res))))
+             (message "<< %s" res)
+             (ellsp-send-response res)))
+          (t
+           (message "<< %s" "failed to send response")))))
 
 (defun ellsp--get-content-length (input)
   "Return the content length from INPUT."

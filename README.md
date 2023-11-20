@@ -24,6 +24,10 @@ Here is the list of currently supported editors:
 
 <img src="./etc/hover.png"/>
 
+### Signature Help
+
+<img src="./etc/signature.png"/>
+
 ## 🔧 Prerequisites
 
 Before installation, make sure you have all the following software installed!
