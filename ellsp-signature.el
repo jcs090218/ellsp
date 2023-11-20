@@ -107,7 +107,6 @@
         (forward-line line)
         (forward-char character)
         (cond ((eldoc-print-current-symbol-info)
-               (message "?")
                (setq ellsp-signature--full-string
                      (with-current-buffer eldoc--doc-buffer (buffer-string)))
                (lsp--make-response
@@ -116,6 +115,8 @@
                  :active-signature? 0
                  :signatures (apply #'vector (ellsp-signature--signature-items))
                  :active-parameter? ellsp-signature--active-parameter)))
+              ;; XXX: Send empty signature to cancel popup window!
+              ;; But, do we really need to do this?
               (t
                (lsp--make-response id (lsp-make-signature-help :signatures nil))))))))
 
