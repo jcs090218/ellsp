@@ -188,6 +188,7 @@
 
 ;;;###autoload
 (defun ellsp-register ()
+  "Register to start using this language server."
   (interactive)
   (add-to-list 'lsp-language-id-configuration '(emacs-lisp-mode . "emacs-lisp"))
   (lsp-register-client

@@ -13,6 +13,7 @@ an Emacs user already, I prefer you use Emacs directly.
 Here is the list of currently supported editors:
 
 - [VSCode](https://marketplace.visualstudio.com/items?itemName=jcs090218.Ellsp)
+- [Emacs]() (`M-x ellsp-register`)
 
 ## 🖼️ Gallery
 
