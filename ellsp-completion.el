@@ -43,8 +43,11 @@
     (mapcar (lambda (candidate)
               (lsp-make-completion-item
                :label candidate
-               ;; :documentation? (or (ignore-errors (documentation (intern candidate)))
-               ;;                     "No documentation")
+               ;; XXX: The documentation take so much performance, so it's
+               ;; currently disabled! Hopefully, I am able to figure this out
+               ;; in the future!
+               ;;:documentation? (or (ignore-errors (documentation (intern candidate)))
+               ;;                    "No documentation")
                :deprecated? (if (null (company-capf 'deprecated candidate))
                                 json-false
                               t)
