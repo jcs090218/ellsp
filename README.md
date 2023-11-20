@@ -28,6 +28,7 @@ Here is the list of currently supported editors:
 
 Before installation, make sure you have all the following software installed!
 
+- [Emacs](https://www.gnu.org/software/emacs/)
 - [Eask](https://github.com/emacs-eask/cli)
 
 ## 💾 Installation
