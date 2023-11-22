@@ -57,6 +57,26 @@ $ eask install-deps --dev
 $ eask exec install-ellsp
 ```
 
+To test to see if the server installed successfully, execute the following command:
+
+### Linux
+
+```sh
+$ eask exec ellsp-linux
+```
+
+### macOS
+
+```sh
+$ eask exec ellsp-macos
+```
+
+### Windows
+
+```sh
+$ eask exec ellsp-win.exe
+```
+
 ## 🔗 References
 
 - [Language Server Protocol Specification](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/)
