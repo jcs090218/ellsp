@@ -77,6 +77,13 @@ $ eask exec ellsp-macos
 $ eask exec ellsp-win.exe
 ```
 
+If you see the following screen (no error), you successfully installed the language server! 🎉🥳
+
+```sh
+Updating environment variables... done v
+Exporting environment variables... done v
+```
+
 ## 🔗 References
 
 - [Language Server Protocol Specification](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/)
