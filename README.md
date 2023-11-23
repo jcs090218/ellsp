@@ -84,7 +84,7 @@ Updating environment variables... done v
 Exporting environment variables... done v
 ```
 
-*P.S. Nothing output afterward because the language server is waiting for the
+*🔊 P.S. Nothing output afterward because the language server is waiting for the
 language client to connect!*
 
 ## 🔗 References
