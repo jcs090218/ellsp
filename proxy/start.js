@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2023 the Ellsp authors.
+ * Copyright (C) 2023-2024 the Ellsp authors.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
